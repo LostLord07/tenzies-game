@@ -2,6 +2,8 @@ import React from "react";
 import Die from "./components/Die";
 import { nanoid } from "nanoid";
 import Confetti from "react-confetti";
+// import Timer from './components/Timer'
+// import { newGameStarted } from "./components/Timer";
 function App() {
  
 
@@ -10,7 +12,21 @@ function App() {
 
  let [tenzies, changeTenzies] = new React.useState(false)
 
+//  let [held, changeHeld] = new React.useState(false)
+
  // This function is responsible for creating 10 random numbers for the dice component
+ const [seconds, setSeconds] = React.useState(0);
+ React.useEffect(() => {
+   let intervalId
+   if ( !tenzies){
+      intervalId = setInterval(() => {
+       setSeconds(seconds => seconds + 1);
+     }, 1000);
+   }
+   
+   return () => clearInterval(intervalId);
+ }, [tenzies]);
+
   function tenRandomNumber() {
     let res = [];
     for (let i = 0; i < 10; i++) {
@@ -26,6 +42,7 @@ function App() {
     if (tenzies){
       changeAllDice(tenRandomNumber)
       changeTenzies(false)
+      setSeconds(0)
     }
   }
 
@@ -74,6 +91,7 @@ function App() {
 
 
 
+
   let diceComponents = allDice.map((num) => {
     return (
       <Die
@@ -94,6 +112,8 @@ function App() {
         Roll until all dice are the same. Click each die to freeze it at its
         current value between rolls.
       </p>
+      {/* <Timer tenzies = {tenzies} /> */}
+      <p className="game-timer">Your time: {seconds}</p>
       <div className="die-container">{diceComponents}</div>
       <div className="roll-container">
         <button onClick={tenzies?newGame:rollDice} >{tenzies?'New Game':'Roll'}</button>
